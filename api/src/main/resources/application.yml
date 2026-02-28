@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/payout
+    username: sample
+    password: sample
+
+  jpa:
+    hibernate:
+      ddl-auto: update
