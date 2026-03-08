@@ -1,6 +1,9 @@
 package com.jvspayout.api;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+
 import com.jvspayout.api.service.EmailVerificationService;
 
 @RestController
@@ -14,16 +17,29 @@ public class EmailVerificationController {
     }
 
     @PostMapping("/send-code")
-    public void sendCode(@RequestParam String email) {
-        service.sendVerificationCode(email);
+    public ResponseEntity<?> sendCode(@RequestParam String email) {
+
+        try {
+
+            service.sendVerificationCode(email);
+
+            return ResponseEntity.ok().build();
+
+        } catch (RuntimeException e) {
+
+            return ResponseEntity
+                    .status(HttpStatus.TOO_MANY_REQUESTS)
+                    .body(e.getMessage());
+        }
     }
 
     @PostMapping("/verify-code")
-    public boolean verifyCode(
+    public ResponseEntity<Boolean> verifyCode(
             @RequestParam String email,
             @RequestParam String code) {
 
-        return service.verifyCode(email, code);
-    }
+        boolean result = service.verifyCode(email, code);
 
+        return ResponseEntity.ok(result);
+    }
 }
